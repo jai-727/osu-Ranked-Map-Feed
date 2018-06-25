@@ -4,11 +4,12 @@ Want to send newly ranked maps to your discord server to snipe the quickdraw ach
 
 ## Requirements:
 - Python3.5+
-- Feedparser
+- Feedparser libraries
   `pip install feedparser`
 - Discord Hooks.py
   `pip install discord_hooks`
- 
+- Requests libraries (should be installed with discord hooks)
+
 Note: Requests should be installed with discord hooks but if for some reason it isn't do:
   `pip install requests`
   
