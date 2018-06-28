@@ -25,10 +25,17 @@ def NewRanked():
     global RankedLink
     global OldRank
     global ParsedRSS
-
-    #Using the maps links as unique identifiers
+    
+    #Try/Except to prevent program crashing if the internet connection disappears
+    try:
+    #Using the maps links as unique identifiers to make the program move forward
     ParsedRSS = feedparser.parse(RSS)
     RankedLink = ParsedRSS.entries[0].link
+    
+    except:
+        print("Connection Failed")
+        time.sleep(300)
+        
     if RankedLink != OldRank:
         OldRank = RankedLink
         RSSInfo()
