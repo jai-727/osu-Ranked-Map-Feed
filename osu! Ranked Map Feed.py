@@ -1,4 +1,4 @@
-#Ranked Map osu!Feed V1
+#Ranked Map osu!Feed V1.1
 #Initial Release
 import os
 import time
@@ -29,8 +29,8 @@ def NewRanked():
     #Try/Except to prevent program crashing if the internet connection disappears
     try:
     #Using the maps links as unique identifiers to make the program move forward
-    ParsedRSS = feedparser.parse(RSS)
-    RankedLink = ParsedRSS.entries[0].link
+        ParsedRSS = feedparser.parse(RSS)
+        RankedLink = ParsedRSS.entries[0].link
     
     except:
         print("Connection Failed")
