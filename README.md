@@ -17,4 +17,4 @@ _Note: Requests should be installed with discord hooks but if for some reason it
 1. Download or clone this git
 2. Create a [webhook](https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks) for the channel you want to put the ranked map feed
 3. Get an osu! API key from https://osu.ppy.sh/p/api
-4. Run the program
+4. Run the program and follow the rest of the instructions provided by the program
