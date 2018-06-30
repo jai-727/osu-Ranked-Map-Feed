@@ -20,4 +20,4 @@ Want to be notified of newly ranked beatmaps on your discord server to snipe tha
 _If you're having trouble installing, you can contact me on discord at Jplayz#7492. Alternatively, you can open a new issue on github._
 
 ## References
-dhooks or Discord Hooks was made by 4rqm and can be found [here](https://github.com/4rqm/dhooks)
+Discord Hooks/dhooks was made by 4rqm and can be found [here](https://github.com/4rqm/dhooks)
