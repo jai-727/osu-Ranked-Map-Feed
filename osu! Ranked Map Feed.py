@@ -1,5 +1,4 @@
-#Ranked Map osu!Feed V1.1
-#Initial Release
+#Ranked Map osu!Feed V1.2
 import os
 import time
 import json
@@ -8,11 +7,11 @@ try:
 except:
     raise RuntimeError("feedparser required: pip install feedparser")
 try:
-    from discord_hooks import Webhook
     import requests
+    from discord_hooks import Webhook
     time.sleep(10)
 except:
-    raise RuntimeError("discord_hooks required: pip install discord_hooks")
+    raise RuntimeError("requests required: pip install requests")
     time.sleep(10)
 
 #The feed the program will be getting all its information from
