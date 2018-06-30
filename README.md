@@ -7,7 +7,7 @@ Want to be notified of newly ranked beatmaps on your discord server to snipe tha
 - Feedparser
   `pip install feedparser`
 - Discord Hooks.py
-  Now included with the git
+  `Now included with the git`
 - Requests
   `pip install requests`
   
