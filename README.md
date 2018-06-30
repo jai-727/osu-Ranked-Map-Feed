@@ -4,13 +4,11 @@ Want to be notified of newly ranked beatmaps on your discord server to snipe tha
 
 ## Requirements
 - Python 3.5+
-- Feedparser libraries
+- Feedparser
   `pip install feedparser`
 - Discord Hooks.py
-  `pip install discord_hooks`
-- Requests libraries (should be installed with discord hooks)
-
-_Note: Requests should be installed with discord hooks but if for some reason it isn't do:_
+  Now included with the git
+- Requests
   `pip install requests`
   
 ## Installation
@@ -20,3 +18,6 @@ _Note: Requests should be installed with discord hooks but if for some reason it
 4. Run the program and follow the rest of the instructions provided by the program
 
 _If you're having trouble installing, you can contact me on discord at Jplayz#7492. Alternatively, you can open a new issue on github._
+
+## References
+dhooks or Discord Hooks was made by 4rqm and can be found [here](https://github.com/4rqm/dhooks)
