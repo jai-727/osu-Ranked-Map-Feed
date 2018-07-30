@@ -24,25 +24,28 @@ def NewRanked():
     global RankedLink
     global OldRank
     global ParsedRSS
+    FeedCheck = True
+    while FeedCheck == True:
+   
+        #Try/Except to prevent program crashing if the internet connection disappears
+        try:
+        #Using the maps links as unique identifiers to make the program move forward
+            ParsedRSS = feedparser.parse(RSS)
+            RankedLink = ParsedRSS.entries[0].link
     
-    #Try/Except to prevent program crashing if the internet connection disappears
-    try:
-    #Using the maps links as unique identifiers to make the program move forward
-        ParsedRSS = feedparser.parse(RSS)
-        RankedLink = ParsedRSS.entries[0].link
-    
-    except:
-        print("Connection Failed")
-        time.sleep(300)
+        except:
+            print("Connection Failed")
+            time.sleep(300)
         
-    if RankedLink != OldRank:
-        OldRank = RankedLink
-        RSSInfo()
+        if RankedLink != OldRank:
+            OldRank = RankedLink
+            FeedCheck = False
+            RSSInfo()
+            
 
-    else:
-        time.sleep(300)
-        NewRanked()
-    
+        else:
+            time.sleep(300)
+                  
 #-----------------Gathering all the information needed from the RSS feed-------
 def RSSInfo():
     global ParsedRSS
