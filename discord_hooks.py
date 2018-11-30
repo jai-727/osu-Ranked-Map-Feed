@@ -133,7 +133,7 @@ class Webhook:
 		if result.status_code == 400:
 			print("Post Failed, Error 400")
 		else:
-			print("Payload delivered successfuly")
+			print("Payload delivered successfully")
 			print("Code : "+str(result.status_code))
 			time.sleep(2)
 
