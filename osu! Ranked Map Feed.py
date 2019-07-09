@@ -40,7 +40,7 @@ else:
     data[''] = []  
     data[''].append({  
         'Osu!Key': NewKey,
-        'Webhook': NewWebhook,
+        'Webhook': NewWebhook
     })
 
     #Dumps informfation into a file
@@ -56,6 +56,7 @@ with open('config.txt','r') as config_file:
         webhook = info['Webhook']
 config_file.close()
 
+
 #Starts the main program
 while 0 < 1:
 
@@ -65,25 +66,24 @@ while 0 < 1:
     FeedCheck = True
 
     while FeedCheck == True:
-        #Try/Except to prevent the program crashing when internet connect is NOT present
-        try:    
-        #Using the maps as unique identifiers as each map has different ID
-            ParsedRSS = feedparser.parse(RSS)
+
+        ParsedRSS = feedparser.parse(RSS)
+        try:
+            #Using the maps as unique identifiers as each map has different ID
             RankedLink = ParsedRSS.entries[0].link
-    
+
         except:
             print("Connection Failed")
-            time.sleep(300)
+            time.sleep(60)
 
         if RankedLink != OldRank:
             OldRank = RankedLink
             FeedCheck = False
 
         else:
-            time.sleep(300)
+            time.sleep(45)
 
 #-----------------Gathering information from the RSS feed--------------------
-
     Title = ParsedRSS.entries[0].title #Map Title
     Author = ParsedRSS.entries[0].author #Mapper of song
 
@@ -168,6 +168,7 @@ while 0 < 1:
     #This takes it out of a list and turns it into a usable format without the square brackets
     GM = ", ".join(gamemode)
     #Sets up format for if there is 1 gamemode present
+    GMFormat = "hybrid" #this helps reduce lines of code later on
     if len(gamemode) == 1:
         GMFormat = GM
 
@@ -192,17 +193,91 @@ while 0 < 1:
                 GMFormat2 = "● {} {} difficulties".format(str(man), GM)
             else:
                 GMFormat2 = "● {} {} difficulty".format(str(man), GM)
-    
-    elif len(gamemode) >= 2:
-        GMFormat = 'Hybrid'
+
+    elif len(gamemode) == 2:
+        GM1 = ""
+        GM2 = ""
+        if std > 1:
+            GM1 = "osu!standard"
+            val1 = std
+
+        if tko > 1:
+            if len(GM1) != 0:
+                GM2 = "osu!taiko"
+                val2 = tko
+            else:
+                GM1 = "osu!taiko"
+                val1 = tko
+
+        if ctb > 1:
+            if len(GM1) > 3:
+                GM2 = "osu!catch"
+                val2 = ctb
+            else:
+                GM1 = "osu!catch"
+                val1 = ctb
+
+        if man > 1:
+            GM2 = "osu!mania"
+            val2 = man
+
+        GMFormat2 = """● {} {}
+● {} {}""".format(val1, GM1, val2, GM2)
+
+
+    elif len(gamemode) == 3:
+        GM1 = ""
+        GM2 = ""
+        GM3 = ""
+        
+        if std > 1:
+            GM1 = "osu!standard"
+            val1 = std
+
+        if tko > 1:
+            if len(GM1) > 3:
+                GM2 = "osu!taiko"
+                val2 = tko
+            else:
+                GM1 = "osu!taiko"
+                val1 = tko
+
+        if ctb > 1:
+            if len(GM2) > 3:
+                GM3 = "osu!catch"
+                val3 = ctb
+            else:
+                GM2 = "osu!catch"
+                val2 = ctb
+
+        if man > 1:
+            GM3 = "osu!mania"
+            val3 = man
+
+        GMFormat2 = """● {} {}
+● {} {}
+● {} {}""".format(val1, GM1, val2, GM2, val3, GM3)
+
+    elif len(gamemode) == 4:
         GMFormat2 = """● {} osu!standard diffs
 ● {} osu!taiko diffs
 ● {} osu!catch diffs
 ● {} osu!mania diffs""".format(std,tko,ctb,man)
 
+
+#------------------Printing the values to check it works---------------------------
+
+    print('New {} map by {}'.format(GMFormat, Author))
+    print('{}'.format(Title))
+    print("""**BPM:** {}
+**Song Length:** {}
+**Containing:**
+{}
+""".format(BPM, Length, GMFormat2))
+
 #------------------Programming and sending the embed itself------------------
         
-    embed = Webhook(webhook, color=0x0098f9)
+    embed = Webhook(webhook, color=0xFFB6C1)
     embed.set_author(name='New {} map by {}'.format(GMFormat, Author), icon='https://a.ppy.sh/{}'.format(AuthorID), url='https://osu.ppy.sh/users/{}'.format(AuthorID))
     embed.set_title(title='**__{}__**'.format(Title),url=RankedLink)
     embed.set_thumbnail(Banner)
@@ -212,5 +287,4 @@ while 0 < 1:
 {}
 """.format(BPM, Length, GMFormat2))
     embed.set_footer(text='Ranked!',ts=True,icon='https://hypercyte.s-ul.eu/W4GBjy0M')
-    embed.post()    
-
+    embed.post()
