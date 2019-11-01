@@ -1,4 +1,4 @@
-#Ranked Map osu!Feed V2
+#Ranked Map osu!Feed V3
 #By Jplayz
 
 #Collecting all the libraries
@@ -8,9 +8,9 @@ import json
 
 #These ones need to be installed using pip so we check for the user
 try:
-    import feedparser
+    from bs4 import BeautifulSoup
 except:
-    raise RuntimeError("feedparser required: pip install feedparser")
+    raise RuntimeError("bs4 required: pip install bs4")
     time.sleep(10)
 
 try:
@@ -22,8 +22,8 @@ except:
     time.sleep(10)
 
 #The RSS Feed to read from
-RSS = "https://osu.ppy.sh/feed/ranked/"
-OldRank = ""
+URL = "https://osu.ppy.sh/beatmapsets/events?user=&types%5B%5D=rank"
+OldSplit = ""
 #-----------------------------Checking Config File---------------------------
 
 #Checks if a config file has been created
@@ -60,72 +60,50 @@ config_file.close()
 #Starts the main program
 while 0 < 1:
 
-#---------------------Checking for a new update to the RSS Feed--------------
+#---------------------Checking for a new ranked map-------------------------
     
     #Starts a loop to contantly check if a new map is present
     FeedCheck = True
 
     while FeedCheck == True:
 
-        ParsedRSS = feedparser.parse(RSS)
+
         try:
-            #Using the maps as unique identifiers as each map has different ID
-            RankedLink = ParsedRSS.entries[0].link
+            r = requests.get(URL)
+            #Seeing if a new beatmap has been ranked, using the URLs as identifiers
+            soup = BeautifulSoup(r.text, 'html.parser')
+            soup2 = soup.find("div", {"class":"beatmapset-event"}) #Gets information from the first ranked beatmap on the page
+            SoupSplit = str(soup2.find('a')).split('"') #Splits it so we can get the URL of the beatmap
 
         except:
             print("Connection Failed")
             time.sleep(60)
 
-        if RankedLink != OldRank:
-            OldRank = RankedLink
+        if SoupSplit[1] != OldSplit:
+            OldSplit = SoupSplit[1]
             FeedCheck = False
 
         else:
             time.sleep(45)
 
-#-----------------Gathering information from the RSS feed--------------------
-    Title = ParsedRSS.entries[0].title #Map Title
-    Author = ParsedRSS.entries[0].author #Mapper of song
-
-    #Getting the map banner
-    Desc = ParsedRSS.entries[0].description #The description contains the map banner as a part of it
-    DescSplit = Desc.split("'") #There is a ' present in the split
-    Banner = DescSplit[3]
-
-#----------------------Getting User info through osu!Api----------------------
-    
-    #Generating the URL used to read from the API
-    UserURL = "http://osu.ppy.sh/api/get_user?k={}&u={}".format(APIKey, Author)
-
-    #Requests the URL
-    r = requests.get(UserURL)
-    #Turns it into a list
-    AuthorProfile = list(r.json())
-    #Gets the userID
-    AuthorID = AuthorProfile[0]['user_id']
-
 #------------------Getting Beatmap info via osu!API--------------------------
 
     #Generating API access URL for the map
-    #This is similar to getting user info
-    MapID = RankedLink.replace('http://osu.ppy.sh/s/','')
+    MapID = SoupSplit[1].split('/')
+    MapID = MapID[4]
     MapURL = "http://osu.ppy.sh/api/get_beatmaps?k={}&s={}".format(APIKey, MapID)
     r = requests.get(MapURL)
     ArrayMapURL = list(r.json())
-    #This gets the BPM of the map
+    #Getting all the mapper information here
+    Mapper = ArrayMapURL[0]['creator']
+    MapperID = ArrayMapURL[0]['creator_id']
+
+    #Map info
+    Title = ArrayMapURL[0]['title']
+    Artist = ArrayMapURL[0]['artist']
     BPM = ArrayMapURL[0]['bpm']
+    TotalLength = int(ArrayMapURL[0]['total_length'])
 
-    #Getting Map Length
-    RawLength = int(ArrayMapURL[0]['total_length'])
-    Minutes = str(int(RawLength//60)) #Converts to a string for later use
-    Seconds = str(int(RawLength%60))
-
-    #Prevents map from ending up looking like 2:2 if it is 2 minutes and 2 seconds long
-    if len(Seconds) != 2:
-        Seconds = "0"+Seconds
-
-    #Creates string to be used in the message
-    Length = Minutes+":"+Seconds    
 
 #-----------------Getting the gamemodes avaliable to play--------------------               
 
@@ -264,11 +242,31 @@ while 0 < 1:
 ● {} osu!catch diffs
 ● {} osu!mania diffs""".format(std,tko,ctb,man)
 
+#----------------Getting info into the right format--------------------------
+    #Putting the title in a better format
+    EmbedTitle = "{} - {}".format(Artist, Title)
+
+    #Getting the banner
+    Banner = "https://assets.ppy.sh/beatmaps/{}/covers/list.jpg".format(MapID)
+
+    #Getting Map Length
+    Minutes = str(int(TotalLength//60)) #Converts to a string for later use
+    Seconds = str(int(TotalLength%60))
+
+    #Prevents map from ending up looking like 2:2 if it is 2 minutes and 2 seconds long
+    if len(Seconds) != 2:
+        Seconds = "0"+Seconds
+
+    #Creates string to be used in the message
+    Length = Minutes+":"+Seconds
+
+    #Creating a URL straight to the beatmap
+    MapLink = "https://osu.ppy.sh/beatmapsets/{}".format(MapID)
 
 #------------------Printing the values to check it works---------------------------
 
-    print('New {} map by {}'.format(GMFormat, Author))
-    print('{}'.format(Title))
+    print('New {} map by {}'.format(GMFormat, Mapper))
+    print('{}'.format(EmbedTitle))
     print("""**BPM:** {}
 **Song Length:** {}
 **Containing:**
@@ -278,8 +276,8 @@ while 0 < 1:
 #------------------Programming and sending the embed itself------------------
         
     embed = Webhook(webhook, color=0xFFB6C1)
-    embed.set_author(name='New {} map by {}'.format(GMFormat, Author), icon='https://a.ppy.sh/{}'.format(AuthorID), url='https://osu.ppy.sh/users/{}'.format(AuthorID))
-    embed.set_title(title='**__{}__**'.format(Title),url=RankedLink)
+    embed.set_author(name='New {} map by {}'.format(GMFormat, Mapper), icon='https://a.ppy.sh/{}'.format(MapperID), url='https://osu.ppy.sh/users/{}'.format(MapperID))
+    embed.set_title(title='**__{}__**'.format(EmbedTitle),url=MapLink)
     embed.set_thumbnail(Banner)
     embed.set_desc("""**BPM:** {}
 **Song Length:** {}
