@@ -1,15 +1,11 @@
-### RSS Feed used in this program is no longer available as a result the program no longer works
-
-
-
 ### osu-Ranked-Map-Feed
 Want to be notified of newly ranked beatmaps on your discord server to snipe that quickdraw achievement? Then this is for you!
 
 
 ## Requirements
 - Python 3.5+
-- Feedparser
-  `pip install feedparser`
+- BeautifulSoup4
+  `pip install bs4`
 - Discord Hooks.py
   `Now included with the git`
 - Requests
