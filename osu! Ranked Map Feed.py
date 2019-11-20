@@ -151,23 +151,23 @@ while 0 < 1:
         GMFormat = GM
 
         if GM == "osu!standard":
-            if std > 1:
+            if std >= 1:
                 GMFormat2 = "● {} {} difficulties".format(str(std), GM)
             else:
                 GMFormat2 = "● {} {} difficulty".format(str(std), GM)
             
         elif GM == "osu!taiko":
-            if tko > 1:
+            if tko >= 1:
                 GMFormat2 = "● {} {} difficulties".format(str(tko), GM)
             else:
                 GMFormat2 = "● {} {} difficulty".format(str(tko), GM)
         elif GM =="osu!catch":
-            if ctb > 1:
+            if ctb >= 1:
                 GMFormat2 = "● {} {} difficulties".format(str(ctb), GM)
             else:
                 GMFormat2 = "● {} {} difficulty".format(str(ctb), GM)
         elif GM =="osu!mania":
-            if man > 1:
+            if man >= 1:
                 GMFormat2 = "● {} {} difficulties".format(str(man), GM)
             else:
                 GMFormat2 = "● {} {} difficulty".format(str(man), GM)
@@ -175,11 +175,11 @@ while 0 < 1:
     elif len(gamemode) == 2:
         GM1 = ""
         GM2 = ""
-        if std > 1:
+        if std >= 1:
             GM1 = "osu!standard"
             val1 = std
 
-        if tko > 1:
+        if tko >= 1:
             if len(GM1) != 0:
                 GM2 = "osu!taiko"
                 val2 = tko
@@ -187,7 +187,7 @@ while 0 < 1:
                 GM1 = "osu!taiko"
                 val1 = tko
 
-        if ctb > 1:
+        if ctb >= 1:
             if len(GM1) > 3:
                 GM2 = "osu!catch"
                 val2 = ctb
@@ -195,7 +195,7 @@ while 0 < 1:
                 GM1 = "osu!catch"
                 val1 = ctb
 
-        if man > 1:
+        if man >= 1:
             GM2 = "osu!mania"
             val2 = man
 
