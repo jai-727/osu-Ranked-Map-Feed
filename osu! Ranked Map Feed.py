@@ -91,7 +91,6 @@ while 0 < 1:
 
     #Generating API access URL for the map
     MapURL = "http://osu.ppy.sh/api/get_beatmaps?k={}&s={}".format(APIKey, beatMapSetID)
-    print(MapURL)
     r = requests.get(MapURL)
     ArrayMapURL = list(r.json())
     #Getting all the mapper information here
