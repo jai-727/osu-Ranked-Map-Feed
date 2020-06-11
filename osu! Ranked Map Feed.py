@@ -1,4 +1,4 @@
-#Ranked Map osu!Feed V3
+#Ranked Map osu!Feed V4
 #By Jplayz
 
 #Collecting all the libraries
@@ -67,20 +67,21 @@ while 0 < 1:
 
     while FeedCheck == True:
 
-
         try:
             r = requests.get(URL)
             #Seeing if a new beatmap has been ranked, using the URLs as identifiers
             soup = BeautifulSoup(r.text, 'html.parser')
-            soup2 = soup.find("div", {"class":"beatmapset-event"}) #Gets information from the first ranked beatmap on the page
-            SoupSplit = str(soup2.find('a')).split('"') #Splits it so we can get the URL of the beatmap
+            soup2 = soup.find("script", {"id":"json-events"}) #Gets information from the first ranked beatmap on the page
+            SoupSplit = list(soup2) #Splits it so we can get the URL of the beatmap
+            GetInfo = json.loads(SoupSplit[0]) #This cleans up the data and turns it into a json file to work with
+            beatMapSetID = GetInfo[0]['beatmapset']['id'] #This gets us the ID of the beatmap
 
         except:
             print("Connection Failed")
             time.sleep(60)
 
-        if SoupSplit[1] != OldSplit:
-            OldSplit = SoupSplit[1]
+        if beatMapSetID != OldSplit:
+            OldSplit = beatMapSetID
             FeedCheck = False
 
         else:
@@ -89,9 +90,8 @@ while 0 < 1:
 #------------------Getting Beatmap info via osu!API--------------------------
 
     #Generating API access URL for the map
-    MapID = SoupSplit[1].split('/')
-    MapID = MapID[4]
-    MapURL = "http://osu.ppy.sh/api/get_beatmaps?k={}&s={}".format(APIKey, MapID)
+    MapURL = "http://osu.ppy.sh/api/get_beatmaps?k={}&s={}".format(APIKey, beatMapSetID)
+    print(MapURL)
     r = requests.get(MapURL)
     ArrayMapURL = list(r.json())
     #Getting all the mapper information here
@@ -247,7 +247,7 @@ while 0 < 1:
     EmbedTitle = "{} - {}".format(Artist, Title)
 
     #Getting the banner
-    Banner = "https://assets.ppy.sh/beatmaps/{}/covers/list.jpg".format(MapID)
+    Banner = "https://assets.ppy.sh/beatmaps/{}/covers/list.jpg".format(beatMapSetID)
 
     #Getting Map Length
     Minutes = str(int(TotalLength//60)) #Converts to a string for later use
@@ -261,7 +261,7 @@ while 0 < 1:
     Length = Minutes+":"+Seconds
 
     #Creating a URL straight to the beatmap
-    MapLink = "https://osu.ppy.sh/beatmapsets/{}".format(MapID)
+    MapLink = "https://osu.ppy.sh/beatmapsets/{}".format(beatMapSetID)
 
 #------------------Printing the values to check it works---------------------------
 
